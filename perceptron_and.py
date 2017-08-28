@@ -1,11 +1,11 @@
-# Based on the Udacity SDC course
+# Ejercicio: determinar los pesos y bias que conviertan al perceptron en una funcion and
 
 import pandas as pd
 
 # TODO: Establecer weight1, weight2, y bias
-weight1 = 0.0
-weight2 = 0.0
-bias = -0.0
+weight1 = 1
+weight2 = 1
+bias = -2
 
 
 # ESTO DEBE QUEDAR IGUAL
