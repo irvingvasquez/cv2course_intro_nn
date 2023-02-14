@@ -1,7 +1,23 @@
-# Vision Computacional
-## Segunda Parte: Aprendizaje Profundo
+# Introducción a las redes neuronales
 
-Serie de ejercicios del curso de visión computacional. En este repositorio encontrarás el conjunto de ejercicios.
+En este repositorio encontrarás la serie de ejercicios iniciales de *Introducción a las redes neuronales*. Estos ejercicios estan destinados a implementar desde cero una red neuronal a fin de comprender de forma completa el funcionamiento de las mismas. Solo haremos uso de python y numpy. 
 
-Irving Vasquez
+Para ejecicios más avanzados puedes recurrir a los ejercicios con pytorch que tenemos disponibles en este otro repositorio: practicas pytorch. 
 
+
+> @juan1rving
+> 
+> Instituto Politécnico Nacional
+
+## Instalación
+
+Crear un ambiente de *conda* con los paquetes requeridos. 
+
+```console
+user@pc~$ conda create --name nni python=3
+user@pc~$ conda activate nni
+user@pc~$ pip install jupyter numpy pandas
+```
+Una ves instalados los requerimientos puedes ejecutar los notebooks.
+
+De forma alternativa se pueden ejecutar los scrips en tu cuenta de colab. En cada notebook encontrarás el logotipo: ![logocolab](https://colab.research.google.com/assets/colab-badge.svg). Sin embargo, la versión de colab puede variar y los ejercicios no necesariamente pueder funcionar bien.
