@@ -15,7 +15,7 @@ for field in ['gre', 'gpa']:
 # Split off random 10% of the data for testing
 np.random.seed(42)
 sample = np.random.choice(data.index, size=int(len(data)*0.9), replace=False)
-data, test_data = data.ix[sample], data.drop(sample)
+data, test_data = data.iloc[sample], data.drop(sample)
 
 # Split into features and targets
 features, targets = data.drop('admit', axis=1), data['admit']
