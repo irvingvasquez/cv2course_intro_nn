@@ -1,4 +1,5 @@
 # jivg.org
+import numpy as np
 
 def combinacion_lineal (X , W , b):
     suma = 0
@@ -12,9 +13,6 @@ def escalon ( h ):
         return 1
     else :
         return 0
-    
-
-import numpy as np
 
 def perceptron(W, X, b, activacion):
     h = combinacion_lineal(W, X, b)
