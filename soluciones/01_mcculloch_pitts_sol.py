@@ -7,7 +7,7 @@ def neuronaMyP(E,I,u):
     
     integracion = 0
     for exitatoria in E:
-        integracion = integracion + 1
+        integracion = integracion + exitatoria
     
     if integracion >= u:
         return 1
@@ -23,9 +23,8 @@ def main():
     print("I: ", I)
     u = 1
     print("u: ", u)
-    
+    # inferencia
     print("Resultado: ", neuronaMyP(E,I,u))
-
 
 if __name__ == "__main__":
     main()
