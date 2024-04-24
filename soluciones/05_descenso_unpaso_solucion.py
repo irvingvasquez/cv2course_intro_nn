@@ -1,3 +1,7 @@
+# Attribution 4.0 International
+# Juan Irving Vasquez
+# jivg.org
+
 # importamos paquetes
 import numpy as np
 
@@ -34,7 +38,7 @@ def main():
     # valores de ejemplo
     learning_rate = 1.0
     x = np.array([1,1])
-    y = 5
+    y = 1.0
 
     # pesos iniciales
     w = np.array([0.1,0.2])
@@ -58,7 +62,7 @@ def main():
 
     # Calcula el nuevo error
     n_error = y - neurona(x, n_w, b)
-    print('Nuevo error:', n_error)
+    print('Nuevo error residual:', n_error)
 
 if __name__ == "__main__":
     main()

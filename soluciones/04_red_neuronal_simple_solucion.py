@@ -1,10 +1,14 @@
+# Attribution 4.0 International
+# Juan Irving Vasquez
 # jivg.org
+
 import numpy as np
 
 def combinacion_lineal (X , W , b):
     h = np.dot(W,X) + b
     return h
 
+# función de activación
 def sigmoide(h):
     result = 1/(1+np.exp(-h))
     return result

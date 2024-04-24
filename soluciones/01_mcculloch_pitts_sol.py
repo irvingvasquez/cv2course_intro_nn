@@ -1,3 +1,7 @@
+# Attribution 4.0 International
+# Juan Irving Vasquez
+# jivg.org
+
 import numpy as np
 
 def neuronaMyP(E,I,u):

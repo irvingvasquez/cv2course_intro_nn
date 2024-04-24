@@ -1,4 +1,7 @@
+# Attribution 4.0 International
+# Juan Irving Vasquez
 # jivg.org
+
 import numpy as np
 
 def combinacion_lineal (X , W , b):
