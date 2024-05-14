@@ -28,6 +28,64 @@ def beale_gradient_y(x, y):
     return 2 * (1.5 - x + x * y) * x + 2 * (2.25 - x + x * y**2) * 2 * x * y + 2 * (2.625 - x + x * y**3) * 3 * x * y**2
 
 
+def sphere_function(x, y):
+    return x**2 + y**2
+
+def sphere_gradient_x(x, y):
+    return 2 * x
+
+def sphere_gradient_y(x, y):
+    return 2 * y
+
+
+def ackley_function(x, y):
+    return -20 * math.exp(-0.2 * math.sqrt(0.5 * (x**2 + y**2))) - math.exp(0.5 * (math.cos(2 * math.pi * x) + math.cos(2 * math.pi * y))) + 20 + math.e
+
+def ackley_gradient_x(x, y):
+    return 2 * x * math.exp(-0.2 * math.sqrt(0.5 * (x**2 + y**2))) / math.sqrt(0.5 * (x**2 + y**2)) + 2 * math.pi * math.sin(2 * math.pi * x) * math.exp(0.5 * (math.cos(2 * math.pi * x) + math.cos(2 * math.pi * y)))
+
+def ackley_gradient_y(x, y):
+    return 2 * y * math.exp(-0.2 * math.sqrt(0.5 * (x**2 + y**2))) / math.sqrt(0.5 * (x**2 + y**2)) + 2 * math.pi * math.sin(2 * math.pi * y) * math.exp(0.5 * (math.cos(2 * math.pi * x) + math.cos(2 * math.pi * y)))
+
+
+class optimizationProblem2D:
+    def __init__(self, function, gradient_x, gradient_y, initial_params = [0, 0], search_space = [0, 0, 0, 0], optimal_params = [0, 0]):    
+        self.function = function
+        self.gradient_x = gradient_x
+        self.gradient_y = gradient_y
+        self.initial_params = initial_params
+        self.name = 'Optimization problem'
+        self.optimal_params = optimal_params
+        #search space
+        self.min_x = search_space[0]
+        self.max_x = search_space[1]
+        self.min_y = search_space[2]
+        self.max_y = search_space[3]
+
+    def set_initial_params(self, initial_params):
+        self.initial_params = initial_params
+
+
+class BealeProblem(optimizationProblem2D):
+    def __init__(self):
+        super().__init__(beale_function, beale_gradient_x, beale_gradient_y, initial_params = [0, 0], \
+                         search_space = [-4.5, 4.5, -4.5, 4.5], optimal_params=[3, 0.5])
+        self.name = 'Función Beale'
+
+
+class SphereProblem(optimizationProblem2D):
+    def __init__(self):
+        super().__init__(sphere_function, sphere_gradient_x, sphere_gradient_y, initial_params = [0, 0], \
+                         search_space = [-2, 2, -2, 2], optimal_params=[0, 0])
+        self.name = 'Función esferica'
+
+class AckleyProblem(optimizationProblem2D):
+    def __init__(self):
+        super().__init__(ackley_function, ackley_gradient_x, ackley_gradient_y, initial_params = [0, 0], \
+                          search_space = [-5, 5, -5, 5], optimal_params=[0, 0])
+        self.name = 'Función Ackley'
+
+
 class Optimizer:
     def __init__(self, tolerance=1e-6):
         self.tolerance = tolerance
