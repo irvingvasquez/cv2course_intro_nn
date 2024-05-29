@@ -40,12 +40,15 @@ def sphere_gradient_y(x, y):
 
 def ackley_function(x, y):
     return -20 * math.exp(-0.2 * math.sqrt(0.5 * (x**2 + y**2))) - math.exp(0.5 * (math.cos(2 * math.pi * x) + math.cos(2 * math.pi * y))) + 20 + math.e
+vectorized_ackley_function = np.vectorize(ackley_function)
 
 def ackley_gradient_x(x, y):
     return 2 * x * math.exp(-0.2 * math.sqrt(0.5 * (x**2 + y**2))) / math.sqrt(0.5 * (x**2 + y**2)) + 2 * math.pi * math.sin(2 * math.pi * x) * math.exp(0.5 * (math.cos(2 * math.pi * x) + math.cos(2 * math.pi * y)))
+vectorized_ackley_gradient_x = np.vectorize(ackley_gradient_x)
 
 def ackley_gradient_y(x, y):
     return 2 * y * math.exp(-0.2 * math.sqrt(0.5 * (x**2 + y**2))) / math.sqrt(0.5 * (x**2 + y**2)) + 2 * math.pi * math.sin(2 * math.pi * y) * math.exp(0.5 * (math.cos(2 * math.pi * x) + math.cos(2 * math.pi * y)))
+vectorized_ackley_gradient_y = np.vectorize(ackley_gradient_y)
 
 
 class optimizationProblem2D:
@@ -81,7 +84,7 @@ class SphereProblem(optimizationProblem2D):
 
 class AckleyProblem(optimizationProblem2D):
     def __init__(self):
-        super().__init__(ackley_function, ackley_gradient_x, ackley_gradient_y, initial_params = [0, 0], \
+        super().__init__(vectorized_ackley_function, vectorized_ackley_gradient_x, vectorized_ackley_gradient_y, initial_params = [0, 0], \
                           search_space = [-5, 5, -5, 5], optimal_params=[0, 0])
         self.name = 'Función Ackley'
 
@@ -90,12 +93,14 @@ class Optimizer:
     def __init__(self, tolerance=1e-6):
         self.tolerance = tolerance
         self.history = []
+        self.name = 'Clase Base Optimizer'
 
 class GradientDescentOptimizer(Optimizer):
     def __init__(self, learning_rate=0.01, max_iterations=1000, tolerance=1e-6):
         super().__init__(tolerance=tolerance)
         self.learning_rate = learning_rate
         self.max_iterations = max_iterations
+        self.name = 'Descenso por gradiente'
 
     def next_params(self, gradient, params):
         return [param - self.learning_rate * grad for param, grad in zip(params, gradient)]
