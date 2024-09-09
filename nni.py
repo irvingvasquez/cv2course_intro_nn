@@ -75,6 +75,12 @@ class BealeProblem(optimizationProblem2D):
                          search_space = [-4.5, 4.5, -4.5, 4.5], optimal_params=[3, 0.5])
         self.name = 'Función Beale'
 
+class ReducedBealeProblem(optimizationProblem2D):
+    def __init__(self):
+        super().__init__(beale_function, beale_gradient_x, beale_gradient_y, initial_params = [0, 0], \
+                         search_space = [0.0, 4.5, -2.0, 2.0], optimal_params=[3, 0.5])
+        self.name = 'Función Beale reducida'
+
 
 class SphereProblem(optimizationProblem2D):
     def __init__(self):
