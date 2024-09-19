@@ -3,6 +3,10 @@ from data_prep import features, targets, features_test, targets_test
 
 np.random.seed(21)
 
+def sigmoid_prime(x):
+    s = sigmoid(x)
+    return s*(1-s)
+
 def sigmoid(x):
     """
     Calculate sigmoid
@@ -29,27 +33,29 @@ for e in range(epochs):
     for x, y in zip(features.values, targets):
         ## Forward pass ##
         # TODO: Calculate the output
-        hidden_input = None
-        hidden_output = None
-        output = None
+        hidden_input = np.dot(x,weights_input_hidden)
+        hidden_output = sigmoid(hidden_input)
+        h_o = np.dot(hidden_output,weights_hidden_output)
+        output = sigmoid(h_o)
 
         ## Backward pass ##
         # TODO: Calculate the error
-        error = None
+        error = y - output
 
         # TODO: Calculate error gradient in output unit
-        output_error = None
+        output_error = error * sigmoid_prime(h_o)
 
         # TODO: propagate errors to hidden layer
-        hidden_error = None
+        hidden_error = output_error * np.multiply(weights_hidden_output,hidden_input)
 
         # TODO: Update the change in weights
-        del_w_hidden_output += 0
-        del_w_input_hidden += 0
-
+        del_w_hidden_output += output_error * hidden_output
+        temp = x * hidden_error[:,None]
+        temp = temp.T
+        del_w_input_hidden += temp
     # TODO: Update weights
-    weights_input_hidden += 0
-    weights_hidden_output += 0
+    weights_input_hidden += (learnrate / n_records) * del_w_input_hidden 
+    weights_hidden_output += (learnrate / n_records) * del_w_hidden_output
 
     # Printing out the mean square error on the training set
     if e % (epochs / 10) == 0:

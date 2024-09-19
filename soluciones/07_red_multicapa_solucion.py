@@ -3,9 +3,11 @@
 # jivg.org
 
 import numpy as np
-from nni import sigmoid, sigmoid_prime
+from nni import sigmoid
 
 def main():
+    # Ejemplo de red multicapa implementada en Python
+
     # Tamaño de la red
     N_input = 4
     N_hidden = 3
@@ -14,7 +16,6 @@ def main():
     #Definir matrices de pesos, inicializados de forma aleatoria
     mean = 0.0
     stdev = 0.1
-
     W_1 = np.random.normal(mean, scale=stdev, size=(N_input, N_hidden))
     W_2 = np.random.normal(mean, scale=stdev, size=(N_hidden, N_output))
 
@@ -25,7 +26,7 @@ def main():
     H_1 = np.dot(X, W_1)
     A_1 = sigmoid(H_1)
 
-    print('Salida de la capa intermedia:')
+    print('Salida de la capa oculta:')
     print(A_1)
 
     H_1 = np.dot(A_1, W_2)
@@ -34,7 +35,7 @@ def main():
     # Imprimir predicción
     print('Predicción de la red:')
     print(Y_prediccion)
-    
+
 
 if __name__ == "__main__":
     main()
