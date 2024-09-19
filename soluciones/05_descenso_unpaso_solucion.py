@@ -28,9 +28,9 @@ def error_term(y,W,X,b):
     return delta
 
 # Incremento de los pesos
-def increment(W, X, b, eta, i, y):
-    incremento = eta * error_term(y,W,X,b) * X[i]
-    return incremento
+def incremento(W, X, b, eta, i, y):
+    incre = eta * error_term(y,W,X,b) * X[i]
+    return incre
 
 def main():
     print("Descenso por gradiente un solo paso")
@@ -53,11 +53,11 @@ def main():
     print('Error residual:', residual)
 
     # Calcula el incremento de los pesos
-    incremento = [increment(w, x, b, learning_rate, 0, y), increment(w, x, b, learning_rate, 1, y)]
-    print('Incremento:', incremento)
+    Delta_w = [incremento(w, x, b, learning_rate, 0, y), incremento(w, x, b, learning_rate, 1, y)]
+    print('Incremento:', Delta_w)
 
     # Calcula el nuevo valor del los pesos
-    n_w = w + incremento
+    n_w = w + Delta_w
     print('Nuevos pesos:', n_w)
 
     # Calcula el nuevo error
