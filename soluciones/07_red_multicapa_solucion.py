@@ -29,8 +29,8 @@ def main():
     print('Salida de la capa oculta:')
     print(A_1)
 
-    H_1 = np.dot(A_1, W_2)
-    Y_prediccion = sigmoid(H_1)
+    H_2 = np.dot(A_1, W_2)
+    Y_prediccion = sigmoid(H_2)
 
     # Imprimir predicción
     print('Predicción de la red:')
