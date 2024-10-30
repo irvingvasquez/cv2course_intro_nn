@@ -133,3 +133,32 @@ class GradientDescentOptimizer(Optimizer):
     
     def get_history(self):
         return self.history
+    
+def correlacionPixel (H , I , i , j ) :
+    # Operacion de correlacion para el pixel i , j
+    # Determinar el tamano del kernel
+    m , n = I . shape
+    doskmas1 , _ = H . shape
+    k = np . floor (( doskmas1 - 1 ) / 2 ) . astype ( int )
+    # Inicializar sumatoria
+    sumatoria = 0
+    # Recorrido del Kernel y la imagen
+    for u in range ( -k , k + 1 ) :
+        for v in range ( -k , k + 1 ) :
+            sumatoria += H [ u +k , v + k ] * I [ i +u , j + v ]
+    return sumatoria . astype ( int )
+
+def correlacionCruzada(H, I):
+	doskmas1, _ = H.shape
+	k = np.floor((doskmas1 - 1)/2).astype(int)
+	m, n = I.shape
+	G = np.zeros((m,n))
+	
+	# Realiza la correlacion para cada elemento de I
+	for i in range(k, m-k):
+		for j in range(k, n-k):
+			G[i,j] = correlacionPixel(H,I,i,j)
+	return G
+
+def ReLU(x):
+    return np.maximum(0, x)
