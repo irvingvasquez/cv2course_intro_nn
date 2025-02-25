@@ -4,14 +4,14 @@
 
 import numpy as np
 
-def combinacion_lineal (X , W , b):
+def combinacion_lineal (W, X, b):
     suma = 0
     for w , x in zip (W , X ):
         suma = suma + w * x
     suma = suma + b
     return suma
 
-def escalon ( h ):
+def escalon (h):
     if h >= 0 :
         return 1
     else :
