@@ -5,6 +5,7 @@
 
 import numpy as np
 import math
+import pandas as pd
 
 def sigmoid(x):
     """
@@ -162,3 +163,13 @@ def correlacionCruzada(H, I):
 
 def ReLU(x):
     return np.maximum(0, x)
+
+def datosSinteticos():
+    gen = np.random.RandomState(1)
+    mean1, cov1 = [0, 0], [[1, 0], [0, 20]]
+    mean2, cov2 = [0, 20], [[1, 1], [1, 20]]
+    n_samples = 400
+    X, y = pd.DataFrame(np.vstack([np.random.multivariate_normal(mean1, cov1, size=int(n_samples/2)),
+                               np.random.multivariate_normal(mean2, cov2, size=int(n_samples/2))]),
+                    columns=['x1', 'x2']), pd.Series([0]*int(n_samples/2)+[1]*int(n_samples/2), name='target')
+    return X, y
