@@ -6,15 +6,16 @@
 import numpy as np
 import math
 import pandas as pd
+import nni.functions
 
-def sigmoid(x):
+def sigmoid(h):
     """
     Calculate sigmoid
     """
-    return 1 / (1 + np.exp(-x))
-    
-def sigmoid_prime(x):
-    return sigmoid(x) * (1-sigmoid(x))
+    return 1 / (1 + np.exp(-h))
+
+def sigmoid_prime(h):
+    return sigmoid(h) * (1-sigmoid(h))
 
 def beale_function(x, y):
     term1 = (1.5 - x + x * y)**2
