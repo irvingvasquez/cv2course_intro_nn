@@ -5,7 +5,7 @@
 import numpy as np
 
 def saludar():
-    print("Hola desde modulo1")
+    print("Hola desde modulo solutions.py")
 
 
 def correlacionPixel(H, I, i, j):

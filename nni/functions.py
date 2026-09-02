@@ -1,7 +1,38 @@
+'''
+Module for neural network functions and optimization problems.
+This module provides a collection of mathematical functions, their gradients,
+and optimization algorithms for solving 2D optimization problems. It includes
+implementations of various test functions (Beale, Sphere, Ackley) and gradient
+descent optimization.
+Functions:
+    sigmoid(h): Calculate sigmoid activation function
+    sigmoid_prime(h): Calculate derivative of sigmoid function
+    beale_function(x, y): Beale test function for optimization
+    beale_gradient_x(x, y): Partial derivative of Beale function with respect to x
+    beale_gradient_y(x, y): Partial derivative of Beale function with respect to y
+    sphere_function(x, y): Sphere test function for optimization
+    sphere_gradient_x(x, y): Partial derivative of sphere function with respect to x
+    sphere_gradient_y(x, y): Partial derivative of sphere function with respect to y
+    ackley_function(x, y): Ackley test function for optimization
+    ackley_gradient_x(x, y): Partial derivative of Ackley function with respect to x
+    ackley_gradient_y(x, y): Partial derivative of Ackley function with respect to y
+    correlacionPixel(H, I, i, j): Performs correlation operation for a single pixel using kernel H
+    correlacionCruzada(H, I): Performs full cross-correlation between kernel H and image I
+    ReLU(x): Rectified Linear Unit activation function
+    datosSinteticos(): Generates synthetic dataset with two multivariate normal distributions
+Classes:
+    optimizationProblem2D: Base class for 2D optimization problems
+    BealeProblem: Beale function optimization problem
+    ReducedBealeProblem: Beale function with reduced search space
+    SphereProblem: Sphere function optimization problem
+    AckleyProblem: Ackley function optimization problem
+    Optimizer: Base optimizer class
+    GradientDescentOptimizer: Gradient descent optimization algorithm implementation
+Author: Juan Irving Vasquez (jvasquezg@ipn.mx)
+Date: 2024-06-01
+License: Attribution 4.0 International
+'''
 
-# Attribution 4.0 International
-# Juan Irving Vasquez
-# jivg.org
 
 import numpy as np
 import math
@@ -16,6 +47,12 @@ def sigmoid(h):
 
 def sigmoid_prime(h):
     return sigmoid(h) * (1-sigmoid(h))
+
+def tangente_hiperbolica(h):
+    return np.tanh(h)
+
+def tangente_hiperbolica_prime(h):
+    return 1 - np.tanh(h)**2
 
 def beale_function(x, y):
     term1 = (1.5 - x + x * y)**2
