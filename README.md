@@ -16,7 +16,7 @@ Crear un ambiente de *conda* con los paquetes requeridos.
 ```console
 user@pc~$ conda create --name nni python=3
 user@pc~$ conda activate nni
-user@pc~$ pip install jupyter numpy pandas matplotlib
+user@pc~$ pip install -r requirements.txt
 user@pc~$ jupyter notebook 1_01_mcculloch_pitts.ipynb
 ```
 Una vez instalados los requerimientos puedes ejecutar los notebooks. Sustituye el nombre del archivo por el notebook que quieras abrir. En mi caso me gusta editar los notebooks con VS Code.
