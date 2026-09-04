@@ -37,7 +37,6 @@ License: Attribution 4.0 International
 import numpy as np
 import math
 import pandas as pd
-import nni.functions
 
 def sigmoid(h):
     """
