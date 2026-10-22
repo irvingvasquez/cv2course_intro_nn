@@ -1,0 +1,14 @@
+# Solución de la práctica 22: descenso con momento sobre Beale
+learning_rate: 0.01
+max_iterations: 500
+tolerance: 1.0e-6
+beta: 0.82
+initial_params: [-1.5, 3.0]
+threshold: 0.1
+max_iterations_cap: 2000
+show_animation: true
+save_animation: false
+animation_path: ../output/momentum.mp4
+interval: 30
+save_plot: true
+plot_path: ../output/momentum.png

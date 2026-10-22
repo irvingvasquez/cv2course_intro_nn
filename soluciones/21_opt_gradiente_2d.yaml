@@ -1,0 +1,11 @@
+# Hiperparámetros de la práctica 21: descenso por gradiente 2D sobre la esfera
+learning_rate: 0.01
+max_iterations: 300
+tolerance: 1.0e-6
+initial_params: [-1.0, -1.0]
+show_animation: true
+save_animation: true
+animation_path: ../output/gradient_descent.mp4
+interval: 30
+save_plot: true
+plot_path: ../output/gradient_descent_2d.png
