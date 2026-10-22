@@ -26,6 +26,7 @@ Classes:
     ReducedBealeProblem: Beale function with reduced search space
     SphereProblem: Sphere function optimization problem
     AckleyProblem: Ackley function optimization problem
+    EllipticValleyProblem: Anisotropic quadratic valley for AdaGrad demos
     Optimizer: Base optimizer class
     GradientDescentOptimizer: Gradient descent optimization algorithm implementation
 Author: Juan Irving Vasquez (jvasquezg@ipn.mx)
@@ -131,6 +132,43 @@ class AckleyProblem(optimizationProblem2D):
         super().__init__(vectorized_ackley_function, vectorized_ackley_gradient_x, vectorized_ackley_gradient_y, initial_params = [0, 0], \
                           search_space = [-5, 5, -5, 5], optimal_params=[0, 0])
         self.name = 'Función Ackley'
+
+
+def elliptic_valley_function(x, y, a=1.0, b=40.0):
+    return 0.5 * (a * np.square(x) + b * np.square(y))
+
+
+def elliptic_valley_gradient_x(x, y, a=1.0, b=40.0):
+    return a * x
+
+
+def elliptic_valley_gradient_y(x, y, a=1.0, b=40.0):
+    return b * y
+
+
+class EllipticValleyProblem(optimizationProblem2D):
+    def __init__(self, a=1.0, b=40.0):
+        self.a = a
+        self.b = b
+
+        def function(x, y):
+            return elliptic_valley_function(x, y, a=self.a, b=self.b)
+
+        def gradient_x(x, y):
+            return elliptic_valley_gradient_x(x, y, a=self.a, b=self.b)
+
+        def gradient_y(x, y):
+            return elliptic_valley_gradient_y(x, y, a=self.a, b=self.b)
+
+        super().__init__(
+            function,
+            gradient_x,
+            gradient_y,
+            initial_params=[-4.0, 0.4],
+            search_space=[-6.0, 6.0, -2.5, 2.5],
+            optimal_params=[0.0, 0.0],
+        )
+        self.name = 'Valle elíptico'
 
 
 class Optimizer:
