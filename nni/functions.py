@@ -26,7 +26,7 @@ Classes:
     ReducedBealeProblem: Beale function with reduced search space
     SphereProblem: Sphere function optimization problem
     AckleyProblem: Ackley function optimization problem
-    EllipticValleyProblem: Anisotropic quadratic valley for AdaGrad demos
+    EllipticValleyProblem: Anisotropic quadratic valley for AdaGrad and clipping demos
     Optimizer: Base optimizer class
     GradientDescentOptimizer: Gradient descent optimization algorithm implementation
 Author: Juan Irving Vasquez (jvasquezg@ipn.mx)

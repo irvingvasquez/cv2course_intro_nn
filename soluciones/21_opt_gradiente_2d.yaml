@@ -2,7 +2,7 @@
 learning_rate: 0.01
 max_iterations: 300
 tolerance: 1.0e-6
-initial_params: [-1.0, -1.0]
+w_inicial: [-1.0, -1.0]
 show_animation: true
 save_animation: true
 animation_path: ../output/gradient_descent.mp4

@@ -2,12 +2,12 @@
 # Juan Irving Vasquez
 # jivg.org
 
-"""Solución de la práctica 23: AdaGrad sobre un valle elíptico.
+"""Solución de la práctica 24: AdaGrad sobre un valle elíptico.
 
 Lee los hiperparámetros de un YAML, corre AdaGrad y lo compara con GD.
 Uso:
-    python 23_opt_adagrad.py
-    python 23_opt_adagrad.py 23_opt_adagrad.yaml
+    python 24_opt_adagrad.py
+    python 24_opt_adagrad.py 24_opt_adagrad.yaml
 """
 
 import os
@@ -33,11 +33,11 @@ class AdaGradOptimizer(nni.GradientDescentOptimizer):
         self.name = "AdaGrad"
         self.G = np.zeros(2)
 
-    def next_params(self, gradient, params):
+    def next_params(self, gradient, w):
         g = np.asarray(gradient, dtype=float)
         self.G = self.G + g * g
         step = self.learning_rate / (np.sqrt(self.G) + self.epsilon) * g
-        return [param - s for param, s in zip(params, step)]
+        return [wi - s for wi, s in zip(w, step)]
 
 
 def load_config(path):
@@ -70,26 +70,26 @@ def square_view(xs, ys, margin=0.20):
 
 
 def valley_field(problem, limits, n=200):
-    min_x, max_x, min_y, max_y = limits
-    x = np.linspace(min_x, max_x, n)
-    y = np.linspace(min_y, max_y, n)
-    X, Y = np.meshgrid(x, y)
-    Z = problem.function(X, Y)
-    return X, Y, Z
+    min_w1, max_w1, min_w2, max_w2 = limits
+    w1 = np.linspace(min_w1, max_w1, n)
+    w2 = np.linspace(min_w2, max_w2, n)
+    W1, W2 = np.meshgrid(w1, w2)
+    Z = problem.function(W1, W2)
+    return W1, W2, Z
 
 
 def trajectory(optimizer):
     history = optimizer.get_history()
-    x_values = [log["params"][0] for log in history]
-    y_values = [log["params"][1] for log in history]
-    return x_values, y_values
+    w1_values = [log["params"][0] for log in history]
+    w2_values = [log["params"][1] for log in history]
+    return w1_values, w2_values
 
 
 def view_from_start_and_goal(problem, optimizer, margin=0.20):
-    x_values, y_values = trajectory(optimizer)
+    w1_values, w2_values = trajectory(optimizer)
     return square_view(
-        [x_values[0], problem.optimal_params[0]],
-        [y_values[0], problem.optimal_params[1]],
+        [w1_values[0], problem.optimal_params[0]],
+        [w2_values[0], problem.optimal_params[1]],
         margin=margin,
     )
 
@@ -101,31 +101,31 @@ def apply_square_axes(ax, limits):
     ax.set_aspect("equal", adjustable="box")
 
 
-def run_optimizer(optimizer, problem, initial_params):
+def run_optimizer(optimizer, problem, w_inicial):
     return optimizer.optimize(
         problem.function,
-        lambda x, y: [problem.gradient_x(x, y), problem.gradient_y(x, y)],
-        initial_params,
+        lambda w1, w2: [problem.gradient_x(w1, w2), problem.gradient_y(w1, w2)],
+        w_inicial,
     )
 
 
 def save_plot(problem, optimizer, gd_optimizer, plot_path):
-    ada_x, ada_y = trajectory(optimizer)
-    gd_x, gd_y = trajectory(gd_optimizer)
+    ada_w1, ada_w2 = trajectory(optimizer)
+    gd_w1, gd_w2 = trajectory(gd_optimizer)
     limits = view_from_start_and_goal(problem, optimizer)
-    X, Y, Z = valley_field(problem, limits)
+    W1, W2, Z = valley_field(problem, limits)
 
     plot_path.parent.mkdir(parents=True, exist_ok=True)
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.contourf(X, Y, Z, levels=50, cmap="viridis")
-    ax.plot(ada_x[0], ada_y[0], "wo", markeredgecolor="k")
+    ax.contourf(W1, W2, Z, levels=50, cmap="viridis")
+    ax.plot(ada_w1[0], ada_w2[0], "wo", markeredgecolor="k")
     ax.plot(problem.optimal_params[0], problem.optimal_params[1], "ro")
-    ax.plot(gd_x, gd_y, "C1.-", markersize=5, label=f"{gd_optimizer.name}, lr={gd_optimizer.learning_rate}")
-    ax.plot(ada_x, ada_y, "w.-", markersize=5, label=f"{optimizer.name}, lr={optimizer.learning_rate}")
+    ax.plot(gd_w1, gd_w2, "C1.-", markersize=5, label=f"{gd_optimizer.name}, lr={gd_optimizer.learning_rate}")
+    ax.plot(ada_w1, ada_w2, "w.-", markersize=5, label=f"{optimizer.name}, lr={optimizer.learning_rate}")
     apply_square_axes(ax, limits)
-    ax.set_title(f"GD vs AdaGrad, iter AdaGrad={len(ada_x)}")
-    ax.set_xlabel("x")
-    ax.set_ylabel("y")
+    ax.set_title(f"GD vs AdaGrad, iter AdaGrad={len(ada_w1)}")
+    ax.set_xlabel(r"$w_1$")
+    ax.set_ylabel(r"$w_2$")
     ax.legend(loc="upper right")
     fig.tight_layout()
     fig.savefig(plot_path, dpi=150)
@@ -133,32 +133,32 @@ def save_plot(problem, optimizer, gd_optimizer, plot_path):
 
 
 def make_animation(problem, optimizer, interval, line_style="w.-"):
-    x_values, y_values = trajectory(optimizer)
+    w1_values, w2_values = trajectory(optimizer)
     limits = view_from_start_and_goal(problem, optimizer)
-    X, Y, Z = valley_field(problem, limits)
+    W1, W2, Z = valley_field(problem, limits)
 
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.contourf(X, Y, Z, levels=50, cmap="viridis")
-    ax.plot(x_values[0], y_values[0], "wo", markeredgecolor="k")
+    ax.contourf(W1, W2, Z, levels=50, cmap="viridis")
+    ax.plot(w1_values[0], w2_values[0], "wo", markeredgecolor="k")
     ax.plot(problem.optimal_params[0], problem.optimal_params[1], "ro")
     (line,) = ax.plot([], [], line_style, markersize=6)
     apply_square_axes(ax, limits)
-    ax.set_xlabel("x")
-    ax.set_ylabel("y")
+    ax.set_xlabel(r"$w_1$")
+    ax.set_ylabel(r"$w_2$")
     title = ax.set_title("")
 
     def update(frame):
-        line.set_data(x_values[: frame + 1], y_values[: frame + 1])
+        line.set_data(w1_values[: frame + 1], w2_values[: frame + 1])
         title.set_text(
             f"{optimizer.name}, lr={optimizer.learning_rate}, "
-            f"iter {frame + 1}/{len(x_values)}"
+            f"iter {frame + 1}/{len(w1_values)}"
         )
         return line, title
 
     anim = animation.FuncAnimation(
         fig,
         update,
-        frames=len(x_values),
+        frames=len(w1_values),
         interval=interval,
         blit=True,
         repeat=False,
@@ -169,7 +169,7 @@ def make_animation(problem, optimizer, interval, line_style="w.-"):
 def main(config_path):
     cfg = load_config(config_path)
     problem = nni.EllipticValleyProblem()
-    initial_params = list(cfg["initial_params"])
+    w_inicial = list(cfg.get("w_inicial", cfg.get("initial_params")))
     interval = cfg.get("interval", 30)
     show_animation = bool(cfg.get("show_animation", True)) and bool(os.environ.get("DISPLAY"))
     save_animation = bool(cfg.get("save_animation", False))
@@ -186,30 +186,30 @@ def main(config_path):
         tolerance=cfg["tolerance"],
         epsilon=cfg.get("epsilon", 1e-8),
     )
-    run_optimizer(optimizer, problem, initial_params)
+    run_optimizer(optimizer, problem, w_inicial)
 
     gd = nni.GradientDescentOptimizer(
         learning_rate=cfg["learning_rate"],
         max_iterations=max_iterations_run,
         tolerance=cfg["tolerance"],
     )
-    run_optimizer(gd, problem, initial_params)
+    run_optimizer(gd, problem, w_inicial)
 
     history = optimizer.get_history()
     threshold = float(cfg.get("threshold", 0.1))
     k = min(len(history), max_iterations_cap)
-    params_eval = np.array(history[k - 1]["params"], dtype=float)
-    optimo = np.array(problem.optimal_params, dtype=float)
-    distancia = float(np.linalg.norm(params_eval - optimo))
+    w_eval = np.array(history[k - 1]["params"], dtype=float)
+    w_optimo = np.array(problem.optimal_params, dtype=float)
+    distancia = float(np.linalg.norm(w_eval - w_optimo))
     llego = np.isfinite(distancia) and distancia < threshold
 
     print(f"Configuración: {config_path}")
-    print(f"Parámetros iniciales: {initial_params}")
+    print(f"w inicial: {w_inicial}")
     print(f"learning_rate (GD y AdaGrad): {cfg['learning_rate']}")
-    print(f"Parámetros evaluados: {params_eval}")
-    print(f"Mejor valor encontrado: {problem.function(*params_eval)}")
+    print(f"w evaluado: {w_eval}")
+    print(f"Mejor valor encontrado: {problem.function(*w_eval)}")
     print(f"Iteraciones: {k} (máximo permitido = {max_iterations_cap})")
-    print(f"Óptimo conocido: {optimo}")
+    print(f"w óptimo: {w_optimo}")
     print(f"Distancia al óptimo: {distancia:.4f} (umbral = {threshold})")
     print("Evaluación: SÍ se acerca al óptimo." if llego else "Evaluación: NO se acerca al óptimo.")
 

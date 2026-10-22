@@ -34,14 +34,14 @@ class MomentumOptimizer(nni.GradientDescentOptimizer):
         self.name = "Momentum"
         self.momentum = np.zeros(2)
 
-    def next_params(self, gradient, params):
+    def next_params(self, gradient, w):
         self.momentum = [
             self.beta * m + (1 - self.beta) * grad
             for m, grad in zip(self.momentum, gradient)
         ]
         return [
-            param - self.learning_rate * mom
-            for param, mom in zip(params, self.momentum)
+            wi - self.learning_rate * mom
+            for wi, mom in zip(w, self.momentum)
         ]
 
 
@@ -76,26 +76,26 @@ def square_view(xs, ys, margin=0.20):
 
 
 def beale_field(problem, limits, n=200):
-    min_x, max_x, min_y, max_y = limits
-    x = np.linspace(min_x, max_x, n)
-    y = np.linspace(min_y, max_y, n)
-    X, Y = np.meshgrid(x, y)
-    Z_log = np.log(problem.function(X, Y) + 1)
-    return X, Y, Z_log
+    min_w1, max_w1, min_w2, max_w2 = limits
+    w1 = np.linspace(min_w1, max_w1, n)
+    w2 = np.linspace(min_w2, max_w2, n)
+    W1, W2 = np.meshgrid(w1, w2)
+    Z_log = np.log(problem.function(W1, W2) + 1)
+    return W1, W2, Z_log
 
 
 def trajectory(optimizer):
     history = optimizer.get_history()
-    x_values = [log["params"][0] for log in history]
-    y_values = [log["params"][1] for log in history]
-    return x_values, y_values
+    w1_values = [log["params"][0] for log in history]
+    w2_values = [log["params"][1] for log in history]
+    return w1_values, w2_values
 
 
 def view_from_start_and_goal(problem, optimizer, margin=0.20):
-    x_values, y_values = trajectory(optimizer)
+    w1_values, w2_values = trajectory(optimizer)
     return square_view(
-        [x_values[0], problem.optimal_params[0]],
-        [y_values[0], problem.optimal_params[1]],
+        [w1_values[0], problem.optimal_params[0]],
+        [w2_values[0], problem.optimal_params[1]],
         margin=margin,
     )
 
@@ -108,55 +108,55 @@ def apply_square_axes(ax, limits):
 
 
 def save_plot(problem, optimizer, plot_path):
-    x_values, y_values = trajectory(optimizer)
+    w1_values, w2_values = trajectory(optimizer)
     limits = view_from_start_and_goal(problem, optimizer)
-    X, Y, Z_log = beale_field(problem, limits)
+    W1, W2, Z_log = beale_field(problem, limits)
 
     plot_path.parent.mkdir(parents=True, exist_ok=True)
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.contourf(X, Y, Z_log, levels=50, cmap="viridis")
-    ax.plot(x_values[0], y_values[0], "wo", markeredgecolor="k", label="inicio")
+    ax.contourf(W1, W2, Z_log, levels=50, cmap="viridis")
+    ax.plot(w1_values[0], w2_values[0], "wo", markeredgecolor="k", label="inicio")
     ax.plot(problem.optimal_params[0], problem.optimal_params[1], "ro", label="objetivo")
-    ax.plot(x_values, y_values, "w.-", markersize=6)
+    ax.plot(w1_values, w2_values, "w.-", markersize=6)
     apply_square_axes(ax, limits)
     ax.set_title(
         f"{optimizer.name}, lr={optimizer.learning_rate}, "
-        f"beta={optimizer.beta}, iter={len(x_values)}"
+        f"beta={optimizer.beta}, iter={len(w1_values)}"
     )
-    ax.set_xlabel("x")
-    ax.set_ylabel("y")
+    ax.set_xlabel(r"$w_1$")
+    ax.set_ylabel(r"$w_2$")
     fig.tight_layout()
     fig.savefig(plot_path, dpi=150)
     plt.close(fig)
 
 
 def make_animation(problem, optimizer, interval):
-    x_values, y_values = trajectory(optimizer)
+    w1_values, w2_values = trajectory(optimizer)
     limits = view_from_start_and_goal(problem, optimizer)
-    X, Y, Z_log = beale_field(problem, limits)
+    W1, W2, Z_log = beale_field(problem, limits)
 
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.contourf(X, Y, Z_log, levels=50, cmap="viridis")
-    ax.plot(x_values[0], y_values[0], "wo", markeredgecolor="k")
+    ax.contourf(W1, W2, Z_log, levels=50, cmap="viridis")
+    ax.plot(w1_values[0], w2_values[0], "wo", markeredgecolor="k")
     ax.plot(problem.optimal_params[0], problem.optimal_params[1], "ro")
     (line,) = ax.plot([], [], "w.-", markersize=6)
     apply_square_axes(ax, limits)
-    ax.set_xlabel("x")
-    ax.set_ylabel("y")
+    ax.set_xlabel(r"$w_1$")
+    ax.set_ylabel(r"$w_2$")
     title = ax.set_title("")
 
     def update(frame):
-        line.set_data(x_values[: frame + 1], y_values[: frame + 1])
+        line.set_data(w1_values[: frame + 1], w2_values[: frame + 1])
         title.set_text(
             f"{optimizer.name}, lr={optimizer.learning_rate}, "
-            f"beta={optimizer.beta}, iter {frame + 1}/{len(x_values)}"
+            f"beta={optimizer.beta}, iter {frame + 1}/{len(w1_values)}"
         )
         return line, title
 
     anim = animation.FuncAnimation(
         fig,
         update,
-        frames=len(x_values),
+        frames=len(w1_values),
         interval=interval,
         blit=True,
         repeat=False,
@@ -167,7 +167,7 @@ def make_animation(problem, optimizer, interval):
 def main(config_path):
     cfg = load_config(config_path)
     problem = nni.ReducedBealeProblem()
-    initial_params = list(cfg["initial_params"])
+    w_inicial = list(cfg.get("w_inicial", cfg.get("initial_params")))
     interval = cfg.get("interval", 30)
     show_animation = bool(cfg.get("show_animation", True)) and bool(os.environ.get("DISPLAY"))
     save_animation = bool(cfg.get("save_animation", False))
@@ -183,26 +183,26 @@ def main(config_path):
         tolerance=cfg["tolerance"],
         beta=cfg["beta"],
     )
-    optimized_params = optimizer.optimize(
+    w = optimizer.optimize(
         problem.function,
-        lambda x, y: [problem.gradient_x(x, y), problem.gradient_y(x, y)],
-        initial_params,
+        lambda w1, w2: [problem.gradient_x(w1, w2), problem.gradient_y(w1, w2)],
+        w_inicial,
     )
 
     history = optimizer.get_history()
     threshold = float(cfg.get("threshold", 0.1))
     k = min(len(history), max_iterations_cap)
-    params_eval = np.array(history[k - 1]["params"], dtype=float)
-    optimo = np.array(problem.optimal_params, dtype=float)
-    distancia = float(np.linalg.norm(params_eval - optimo))
+    w_eval = np.array(history[k - 1]["params"], dtype=float)
+    w_optimo = np.array(problem.optimal_params, dtype=float)
+    distancia = float(np.linalg.norm(w_eval - w_optimo))
     llego = np.isfinite(distancia) and distancia < threshold
 
     print(f"Configuración: {config_path}")
-    print(f"Parámetros iniciales: {initial_params}")
-    print(f"Parámetros evaluados: {params_eval}")
-    print(f"Mejor valor encontrado: {problem.function(*params_eval)}")
+    print(f"w inicial: {w_inicial}")
+    print(f"w evaluado: {w_eval}")
+    print(f"Mejor valor encontrado: {problem.function(*w_eval)}")
     print(f"Iteraciones: {k} (máximo permitido = {max_iterations_cap})")
-    print(f"Óptimo conocido: {optimo}")
+    print(f"w óptimo: {w_optimo}")
     print(f"Distancia al óptimo: {distancia:.4f} (umbral = {threshold})")
     print("Evaluación: SÍ se acerca al óptimo." if llego else "Evaluación: NO se acerca al óptimo.")
 

@@ -1,0 +1,17 @@
+# Solución de la práctica 23: recorte de gradiente sobre el valle elíptico
+# GD y clipping usan el mismo learning_rate y max_iterations.
+learning_rate: 0.07
+max_iterations: 1000
+tolerance: 1.0e-6
+clip_norm: 10.0
+w_inicial: [-4.0, 0.4]
+threshold: 0.1
+max_iterations_cap: 2000
+show_animation: true
+save_animation: false
+animation_path: ../output/grad_clipping.mp4
+save_gd_animation: false
+gd_animation_path: ../output/gd_elliptic.mp4
+interval: 30
+save_plot: true
+plot_path: ../output/grad_clipping.png
